@@ -1,0 +1,168 @@
+---
+import { Icon } from "astro-icon/components";
+
+const ENDPOINT = "https://formspree.io/f/xrpelalk";
+
+const socials = [
+  {
+    label: "GitHub",
+    icon: "simple-icons:github",
+    href: "https://github.com/Logi0",
+  },
+  {
+    label: "LinkedIn",
+    icon: "simple-icons:linkedin",
+    href: "https://www.linkedin.com/in/alessandro-mazzoli-83046b318/",
+  },
+  {
+    label: "Behance",
+    icon: "simple-icons:behance",
+    href: "https://www.behance.net/alessanmazzoli2 ",
+  },
+];
+
+const field =
+  "border border-white/30 bg-transparent px-3 py-3 text-base placeholder:text-white/30 transition duration-300 focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 invalid:[&:not(:placeholder-shown)]:border-red-400";
+const label = "text-xs uppercase tracking-wider opacity-70";
+---
+
+<section
+  id="contact"
+  class="mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 py-24 lg:grid-cols-2"
+>
+  <div class="flex flex-col gap-6">
+    <h2 class="text-5xl leading-none md:text-7xl">Contact me</h2>
+    <p class="max-w-md opacity-80">
+      Have a project in mind? Tell me a few lines about it and I'll get back to
+      you.
+    </p>
+
+    <ul class="flex gap-3">
+      {socials.map((s) => (
+        <li>
+          <a
+            href={s.href}
+            aria-label={s.label}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="grid size-11 place-items-center border border-white/30 transition duration-300 hover:border-orange-400 hover:text-orange-400"
+          >
+            <Icon name={s.icon} class="size-5" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <form
+    id="contact-form"
+    data-endpoint={ENDPOINT}
+    class="flex flex-col gap-5 self-center border border-white/30 bg-black/60 p-6 backdrop-blur-sm"
+    novalidate
+  >
+    <div class="flex flex-col gap-2">
+      <label for="name" class={label}>
+        Name
+      </label>
+      <input
+        id="name"
+        type="text"
+        name="name"
+        required
+        autocomplete="name"
+        placeholder="Name / Company name"
+        class={field}
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="email" class={label}>
+        Email
+      </label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="mail@business.com"
+        class={field}
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="message" class={label}>
+        Message
+      </label>
+      <textarea
+        id="message"
+        name="message"
+        rows="5"
+        required
+        placeholder="Tell me about your project..."
+        class={`${field} resize-none`}
+      ></textarea>
+    </div>
+
+    <input
+      type="text"
+      name="website"
+      class="hidden"
+      tabindex="-1"
+      autocomplete="off"
+    />
+
+    <button
+      type="submit"
+      class="border border-white px-6 py-3 uppercase tracking-wider transition duration-500 hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Send message
+    </button>
+
+    <p id="form-status" class="min-h-5 text-sm" role="status"></p>
+  </form>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#contact-form")!;
+  const status = document.querySelector<HTMLParagraphElement>("#form-status")!;
+  const button = form.querySelector<HTMLButtonElement>(
+    'button[type="submit"]',
+  )!;
+
+  function setStatus(text: string, type: "info" | "ok" | "error" = "info") {
+    status.textContent = text;
+    status.classList.remove("text-green-400", "text-red-400");
+    if (type === "ok") status.classList.add("text-green-400");
+    if (type === "error") status.classList.add("text-red-400");
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const data = new FormData(form);
+    if (data.get("website")) return;
+
+    button.disabled = true;
+    setStatus("Sending...");
+
+    try {
+      const res = await fetch(form.dataset.endpoint || "/api/contact", {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error();
+      form.reset();
+      setStatus("Message sent, thank you!", "ok");
+    } catch {
+      setStatus("Something went wrong, please try again later.", "error");
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@fontsource-variable/kode-mono";
+@import "@fontsource/poppins";
+
+* {
+  transition: all 0.5s smooth;
+}
+
+body {
+  font-family: "Kode Mono Variable", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+.f-poppins {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}

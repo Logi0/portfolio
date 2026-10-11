@@ -1,0 +1,26 @@
+---
+import "../styles/global.css";
+import SphereBg from "../components/SphereBg.astro";
+
+const { title } = Astro.props;
+---
+
+<html lang="en" class="scroll-smooth scroll-pt-16">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="text-mauve-200 transition duration-700 size-full bg-black">
+    <main class="size-full p-2 relative z-10">
+      <slot />
+    </main>
+    <SphereBg />
+    <footer class="h-[5vh] flex items-center justify-center border-t-2">
+      <p>@Logio - 2026</p>
+    </footer>
+  </body>
+</html>

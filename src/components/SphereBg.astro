@@ -1,0 +1,310 @@
+---
+import { Icon } from "astro-icon/components";
+
+const icons = [
+  "devicon:html5",
+  "devicon:css3",
+  "devicon:javascript",
+  "devicon:typescript",
+  "devicon:astro",
+  "devicon:tailwindcss",
+  "devicon:mongodb",
+  "devicon:laravel",
+  "devicon:vuejs",
+  "logos:shopify",
+];
+---
+
+<div
+  id="sphere-bg"
+  class="pointer-events-none fixed inset-0 z-0"
+  aria-hidden="true"
+></div>
+
+<!-- icone decorative -->
+<div
+  id="sphere-icons"
+  class="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+  aria-hidden="true"
+>
+  {icons.map((name) => (
+    <span
+      class="sphere-icon absolute left-0 top-0 opacity-0 will-change-transform"
+      style="visibility:hidden"
+    >
+      <span class="grid size-14 place-items-center border border-white/40 bg-black/70 backdrop-blur-sm">
+        <Icon name={name} class="size-8 text-white" />
+      </span>
+    </span>
+  ))}
+</div>
+
+<script>
+  import * as THREE from "three";
+
+  // ---------- impostazioni ----------
+  const RADIUS = 2.2;
+  const SPHERE_MARGIN = 1.5; // più alto = sfera più piccola
+  const SPIN_SPEED = 0.1; // rotazione continua (rad/s)
+  const MAX_VISIBLE = window.innerWidth < 640 ? 2 : 4; // icone contemporanee
+  const HIDE_DURATION = 700; // ms di attesa prima dello scroll verso #contact
+
+  const el = document.querySelector<HTMLDivElement>("#sphere-bg")!;
+  const iconEls = [...document.querySelectorAll<HTMLElement>(".sphere-icon")];
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- scena ----------
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.domElement.style.cssText = "width:100%;height:100%;display:block";
+  el.appendChild(renderer.domElement);
+
+  const sphereMaterial = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.25,
+  });
+  const sphere = new THREE.LineSegments(
+    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(RADIUS, 3)),
+    sphereMaterial,
+  );
+  scene.add(sphere);
+
+  // ---------- interruttore sfera: 1 = visibile, 0 = nascosta ----------
+  let amt = 1;
+  let targetAmt = 1;
+  let pendingScroll = false;
+
+  // click su Contact: prima sparisce la sfera, poi scroll al modulo
+  document
+    .querySelectorAll<HTMLAnchorElement>('a[href="#contact"]')
+    .forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        targetAmt = 0;
+        pendingScroll = true;
+        setTimeout(() => (pendingScroll = false), 1500);
+        setTimeout(
+          () =>
+            document
+              .querySelector("#contact")
+              ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }),
+          reduce ? 0 : HIDE_DURATION,
+        );
+      });
+    });
+
+  // sezione contatti in vista: sfera nascosta; quando esci verso l'alto riappare
+  const contactEl = document.querySelector("#contact");
+  if (contactEl) {
+    new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) targetAmt = 0;
+        else if (!pendingScroll) targetAmt = 1;
+      },
+      { threshold: 0.3 },
+    ).observe(contactEl);
+  }
+
+  // ---------- proiezione di un punto della sfera sullo schermo ----------
+  const _w = new THREE.Vector3();
+  const _n = new THREE.Vector3();
+  const _c = new THREE.Vector3();
+
+  function project(obj: THREE.Object3D) {
+    obj.getWorldPosition(_w);
+    _n.copy(_w).sub(sphere.position).normalize();
+    _c.copy(camera.position).sub(_w).normalize();
+    const facing = _n.dot(_c); // > 0: il punto è sul lato visibile
+    _w.project(camera);
+    return {
+      x: (_w.x * 0.5 + 0.5) * el.clientWidth,
+      y: (-_w.y * 0.5 + 0.5) * el.clientHeight,
+      facing,
+    };
+  }
+
+  // ---------- icone casuali ----------
+  type Item = {
+    el: HTMLElement;
+    anchor: THREE.Object3D;
+    alpha: number; // opacità attuale (sfuma gradualmente)
+    target: 0 | 1; // 1 = deve essere visibile
+    next: number; // istante del prossimo cambio di stato
+    x: number;
+    y: number;
+  };
+
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  const tmp = new THREE.Vector3();
+
+  const items: Item[] = iconEls.map((node) => {
+    const anchor = new THREE.Object3D();
+    sphere.add(anchor);
+    return {
+      el: node,
+      anchor,
+      alpha: 0,
+      target: 0,
+      next: rand(0, 4),
+      x: 0,
+      y: 0,
+    };
+  });
+
+  // sceglie un punto casuale sul lato visibile, lontano dal testo dell'hero e dalle altre icone
+  function place(item: Item) {
+    const hero = document
+      .querySelector("#hero-content")
+      ?.getBoundingClientRect();
+
+    for (let i = 0; i < 30; i++) {
+      const u = Math.random() * 2 - 1;
+      const t = Math.random() * Math.PI * 2;
+      const s = Math.sqrt(1 - u * u);
+      tmp.set(s * Math.cos(t), u, s * Math.sin(t)).multiplyScalar(RADIUS);
+      item.anchor.position.copy(tmp);
+      sphere.updateMatrixWorld(true);
+
+      const p = project(item.anchor);
+      if (p.facing < 0.45) continue;
+
+      if (
+        hero &&
+        p.x > hero.left - 60 &&
+        p.x < hero.right + 60 &&
+        p.y > hero.top - 60 &&
+        p.y < hero.bottom + 60
+      )
+        continue;
+
+      if (
+        items.some(
+          (o) =>
+            o !== item &&
+            o.target === 1 &&
+            Math.hypot(p.x - o.x, p.y - o.y) < 100,
+        )
+      )
+        continue;
+      return true;
+    }
+    return false;
+  }
+
+  function updateIcons(t: number, dt: number, scrollP: number) {
+    const scrollFade = THREE.MathUtils.clamp(1 - scrollP * 1.5, 0, 1);
+    let shown = items.filter((i) => i.target === 1).length;
+
+    for (const item of items) {
+      if (t >= item.next) {
+        if (item.target === 1) {
+          item.target = 0;
+          item.next = t + rand(1.5, 5); // pausa prima della prossima apparizione
+          shown--;
+        } else if (
+          amt > 0.5 &&
+          shown < MAX_VISIBLE &&
+          item.alpha < 0.02 &&
+          place(item)
+        ) {
+          item.target = 1;
+          item.next = t + rand(3, 7); // quanto resta visibile
+          shown++;
+        } else {
+          item.next = t + 0.5;
+        }
+      }
+
+      item.alpha += (item.target - item.alpha) * Math.min(1, dt * 3);
+
+      const p = project(item.anchor);
+      item.x = p.x;
+      item.y = p.y;
+
+      const o =
+        item.alpha *
+        THREE.MathUtils.clamp(p.facing * 3, 0, 1) *
+        scrollFade *
+        amt;
+      item.el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`;
+      item.el.style.opacity = String(o);
+      item.el.style.visibility = o > 0.02 ? "visible" : "hidden";
+    }
+  }
+
+  function hideAllIcons() {
+    for (const item of items) {
+      item.alpha = 0;
+      item.target = 0;
+      item.next = 0;
+      item.el.style.opacity = "0";
+      item.el.style.visibility = "hidden";
+    }
+  }
+
+  // ---------- resize, mouse ----------
+  function resize() {
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+    camera.position.z =
+      Math.max(RADIUS / t, RADIUS / (t * camera.aspect)) * SPHERE_MARGIN;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  new ResizeObserver(resize).observe(el);
+
+  let mx = 0;
+  let my = 0;
+  window.addEventListener("pointermove", (e) => {
+    mx = e.clientX / window.innerWidth - 0.5;
+    my = e.clientY / window.innerHeight - 0.5;
+  });
+
+  // ---------- loop ----------
+  const clock = new THREE.Clock();
+  let iconsHidden = false;
+
+  renderer.setAnimationLoop(() => {
+    const dt = clock.getDelta();
+    if (document.hidden) return;
+
+    // transizione fluida dell'interruttore
+    amt += (targetAmt - amt) * Math.min(1, dt * 2.5);
+
+    // sfera spenta: niente rendering, niente consumo
+    if (amt < 0.01 && targetAmt === 0) {
+      if (!iconsHidden) {
+        hideAllIcons();
+        renderer.clear();
+        iconsHidden = true;
+      }
+      return;
+    }
+    iconsHidden = false;
+
+    if (!reduce) {
+      sphere.rotation.y += dt * (SPIN_SPEED + (1 - amt) * 4); // giro veloce mentre sparisce
+      sphere.rotation.x += (my * 0.6 - sphere.rotation.x) * 0.03;
+      sphere.rotation.z += (-mx * 0.3 - sphere.rotation.z) * 0.03;
+    }
+
+    // scroll: la sfera si ingrandisce e sale oltre la hero
+    const p = Math.min(window.scrollY / window.innerHeight, 1.5);
+    const targetScale = (1 + p * 0.35) * (0.4 + 0.6 * amt); // si rimpicciolisce quando sparisce
+    sphere.scale.setScalar(
+      THREE.MathUtils.lerp(sphere.scale.x, targetScale, 0.08),
+    );
+    sphere.position.y = THREE.MathUtils.lerp(sphere.position.y, p * 0.8, 0.05);
+    sphereMaterial.opacity = 0.25 * amt; // sfuma
+
+    renderer.render(scene, camera);
+    updateIcons(clock.elapsedTime, dt, p);
+  });
+</script>
