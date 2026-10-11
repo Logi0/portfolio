@@ -16,6 +16,11 @@ const stack_2 = [
   { name: "Vue", icon: "devicon:vuejs" },
   { name: "Laravel", icon: "devicon:laravel" },
 ];
+
+const nocode = [
+  { name: "Wix", icon: "simple-icons:wix" },
+  { name: "Squarespace", icon: "simple-icons:squarespace" },
+];
 ---
 
 <section
@@ -25,7 +30,7 @@ const stack_2 = [
   <h2 class="text-center text-5xl md:text-7xl">About me</h2>
 
   <div class="grid gap-8 lg:grid-cols-5">
-    <div class="flex flex-col gap-4 border border-white/30 bg-black/60 p-6 backdrop-blur-sm lg:col-span-3">
+    <div class="flex flex-col gap-4 border border-white/30 bg-black/80 p-6 backdrop-blur-sm lg:col-span-3">
       <p class="text-2xl leading-snug md:text-3xl">
         Software engineer from Italy, specialized in the end-to-end design and
         development of websites and online stores. <br />
@@ -39,9 +44,9 @@ const stack_2 = [
         <p class="mb-3 text-sm uppercase tracking-wider opacity-70">
           Main Stack
         </p>
-        <ul class="grid ggrid-cols-2 gap-3 sm:grid-cols-4">
+        <ul class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {stack.map((tech) => (
-            <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/60 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
+            <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/80 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
               <Icon
                 name={tech.icon}
                 class="size-10 grayscale transition duration-500 group-hover:grayscale-0"
@@ -59,7 +64,7 @@ const stack_2 = [
         </p>
         <ul class="grid grid-cols-2 gap-4 sm:grid-cols-5">
           {stack_2.map((tech) => (
-            <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/60 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
+            <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/80 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
               <Icon
                 name={tech.icon}
                 class="size-5 grayscale transition duration-500 group-hover:grayscale-0"
@@ -71,22 +76,38 @@ const stack_2 = [
           ))}
         </ul>
       </div>
+      <div>
+        <p class="mt-3 max-w-prose text-sm opacity-70">
+          Prefer to manage the site yourself? I also build on platforms like Wix
+          and Squarespace.
+        </p>
+        <p class="mb-3 text-md uppercase tracking-wider opacity-70 mt-2">
+          Website Builder
+        </p>
+        <ul class="flex flex-wrap gap-4 mt-2">
+          {nocode.map((tech) => (
+            <li class="flex items-center gap-2 text-s uppercase tracking-wider opacity-60 transition duration-300 hover:opacity-100">
+              <Icon name={tech.icon} class="size-10" />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
 
     <div class="grid grid-cols-3 gap-4 lg:col-span-2 lg:grid-cols-1">
-      <div class="border border-white/30 bg-black/60 p-4 backdrop-blur-sm">
+      <div class="border border-white/30 bg-black/80 p-4 backdrop-blur-sm">
         <p class="text-4xl md:text-5xl">3+</p>
         <p class="text-xs uppercase tracking-wider opacity-70">
           years of experience
         </p>
       </div>
-      <div class="border border-white/30 bg-black/60 p-4 backdrop-blur-sm">
+      <div class="border border-white/30 bg-black/80 p-4 backdrop-blur-sm">
         <p class="text-4xl md:text-5xl">10</p>
         <p class="text-xs uppercase tracking-wider opacity-70">
           websites delivered
         </p>
       </div>
-      <div class="border border-white/30 bg-black/60 p-4 backdrop-blur-sm">
+      <div class="border border-white/30 bg-black/80 p-4 backdrop-blur-sm">
         <p class="text-4xl md:text-5xl">6</p>
         <p class="text-xs uppercase tracking-wider opacity-70">happy clients</p>
       </div>
@@ -104,7 +125,7 @@ const stack_2 = [
         "MVP Development",
         "Rebranding",
       ].map((item, i) => (
-        <li class="flex flex-col gap-6 border border-white/30 bg-black/60 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
+        <li class="flex flex-col gap-6 border border-white/30 bg-black/80 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
           <span class="text-sm opacity-50">0{i + 1}</span>
           <span class="text-lg leading-snug">{item}</span>
         </li>
