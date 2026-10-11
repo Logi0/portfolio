@@ -7,11 +7,14 @@ const stack = [
   { name: "JavaScript", icon: "devicon:javascript" },
   { name: "TypeScript", icon: "devicon:typescript" },
   { name: "NodeJS", icon: "devicon:nodejs" },
-  { name: "Tailwind CSS", icon: "devicon:tailwindcss" },
-  { name: "Vue", icon: "devicon:vuejs" },
-  { name: "Laravel", icon: "devicon:laravel" },
+  { name: "Tailwind", icon: "devicon:tailwindcss" },
   { name: "MongoDB", icon: "devicon:mongodb" },
   { name: "Shopify", icon: "logos:shopify" },
+];
+
+const stack_2 = [
+  { name: "Vue", icon: "devicon:vuejs" },
+  { name: "Laravel", icon: "devicon:laravel" },
 ];
 ---
 
@@ -29,17 +32,37 @@ const stack = [
         <i class="text-orange-400">From ideas to deployment.</i>
       </p>
       <p class="max-w-prose text-sm leading-relaxed opacity-80 md:text-base">
-        I've been involved in diverse projects across different stages, from
+        I've been involved in different projects across different stages, from
         initial research and feasibility study to development and deployment.
       </p>
       <div>
-        <p class="mb-3 text-sm uppercase tracking-wider opacity-70">Stack</p>
-        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+        <p class="mb-3 text-sm uppercase tracking-wider opacity-70">
+          Main Stack
+        </p>
+        <ul class="grid ggrid-cols-2 gap-3 sm:grid-cols-4">
           {stack.map((tech) => (
             <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/60 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
               <Icon
                 name={tech.icon}
                 class="size-10 grayscale transition duration-500 group-hover:grayscale-0"
+              />
+              <span class="text-xs uppercase tracking-wider opacity-70">
+                {tech.name}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="mb-3 uppercase tracking-wider text-base opacity-90">
+          I've also used
+        </p>
+        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          {stack_2.map((tech) => (
+            <li class="group flex flex-col items-center gap-3 border border-white/30 bg-black/60 p-4 backdrop-blur-sm transition duration-500 hover:border-orange-400">
+              <Icon
+                name={tech.icon}
+                class="size-5 grayscale transition duration-500 group-hover:grayscale-0"
               />
               <span class="text-xs uppercase tracking-wider opacity-70">
                 {tech.name}
