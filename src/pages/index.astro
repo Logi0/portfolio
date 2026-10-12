@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ContactForm from "../components/ContactForm.astro";
 import About from "../components/About.astro";
+import FeatureProject from "../components/FeatureProject.astro";
 ---
 
 <BaseLayout title="Home">
@@ -20,7 +21,7 @@ import About from "../components/About.astro";
           About
         </a>
         <a
-          href="https://www.behance.net/gallery/256943481/Rich-Of-Pain"
+          href="#featured"
           class="border px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black"
         >
           Feature Project
@@ -51,6 +52,7 @@ import About from "../components/About.astro";
       <About />
     </div>
   </section>
+  <FeatureProject />
   <section id="contact" class="grid h-dvh place-items-center px-4">
     <div class="w-full justify-center items-center flex p-5">
       <ContactForm />

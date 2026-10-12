@@ -1,0 +1,77 @@
+---
+import { Icon } from "astro-icon/components";
+
+const BEHANCE_URL = "https://www.behance.net/gallery/256943481/Rich-Of-Pain";
+const LIVE_URL = "";
+const tech = ["logos:shopify", "devicon:html5", "devicon:css3"]; //
+---
+
+<section
+  id="featured"
+  class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center gap-8 px-4 py-24"
+>
+  <div class="flex flex-col gap-2">
+    <p class="text-sm uppercase tracking-wider opacity-70">Featured project</p>
+    <h2 class="text-5xl leading-none md:text-7xl">Rich Of Pain</h2>
+  </div>
+
+  <div class="grid gap-8 lg:grid-cols-5">
+    <a
+      href={BEHANCE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group relative block overflow-hidden border border-white/30 bg-black/60 lg:col-span-3"
+    >
+      <img
+        src={`${import.meta.env.BASE_URL}/featuredproject.png`}
+        alt="Anteprima del progetto Nome progetto"
+        class="aspect-video w-full object-cover object-top transition duration-700 group-hover:scale-[1.03]"
+      />
+      <span class="absolute bottom-3 right-3 flex items-center gap-2 border border-white/60 bg-black/70 px-3 py-1 text-xs uppercase tracking-wider backdrop-blur-sm transition duration-300 group-hover:bg-white group-hover:text-black">
+        <Icon name="simple-icons:behance" class="size-4" />
+        View case study
+      </span>
+    </a>
+
+    <!-- testo -->
+    <div class="flex flex-col gap-5 lg:col-span-2">
+      <p class="text-xl leading-snug md:text-2xl">E-commerce Development</p>
+      <p class="text-sm leading-relaxed opacity-80 md:text-base">
+        Following an in-depth analysis, I handled the entire project end to end,
+        from color palette and UI design to development and platform management,
+        creating an e-commerce experience that transparently reflects the
+        brand's philosophy. Full case study on Behance.
+      </p>
+
+      <ul class="flex flex-wrap gap-3">
+        {tech.map((icon) => (
+          <li class="grid size-11 place-items-center border border-white/30 bg-black/60">
+            <Icon name={icon} class="size-6" />
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-auto flex flex-wrap gap-3">
+        <a
+          href={BEHANCE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 border border-white px-5 py-3 text-sm uppercase tracking-wider transition duration-500 hover:bg-white hover:text-black"
+        >
+          <Icon name="simple-icons:behance" class="size-4" />
+          Case study on Behance
+        </a>
+        {LIVE_URL && (
+          <a
+            href={LIVE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="border border-white/40 px-5 py-3 text-sm uppercase tracking-wider transition duration-500 hover:bg-white hover:text-black"
+          >
+            Visit site
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
