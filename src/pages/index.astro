@@ -6,7 +6,7 @@ import FeatureProject from "../components/FeatureProject.astro";
 ---
 
 <BaseLayout title="Home">
-  <section class="grid min-h-screen place-items-center px-4 text-center">
+  <section class="flex min-h-screen justify-center items-center px-4 text-center">
     <div id="hero-content">
       <h1 class="text-[clamp(4rem,20vw,18rem)] leading-none tracking-tight mix-blend-difference">
         Logi0
@@ -16,20 +16,20 @@ import FeatureProject from "../components/FeatureProject.astro";
       <div class="mt-8 flex justify-center gap-3">
         <a
           href="#about"
-          class="border border-white/40 px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black"
+          class="border border-white/40 px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black sm:text-[12px]"
         >
           About
         </a>
         <a
-          href="#featured"
-          class="border px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black"
+          href="https://www.behance.net/gallery/256943481/Rich-Of-Pain"
+          class="border px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black sm:text-[12px]"
         >
           Feature Project
         </a>
 
         <a
           href="#contact-form"
-          class="border border-white/40 px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black"
+          class="border border-white/40 px-6 py-2 transition duration-500 hover:bg-white hover:text-black bg-black sm:text-[12px]"
         >
           Contact
         </a>
@@ -53,7 +53,7 @@ import FeatureProject from "../components/FeatureProject.astro";
     </div>
   </section>
   <FeatureProject />
-  <section id="contact" class="grid h-dvh place-items-center px-4">
+  <section id="contact" class="flex h-dvh place-items-center px-4">
     <div class="w-full justify-center items-center flex p-5">
       <ContactForm />
     </div>

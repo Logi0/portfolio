@@ -14,12 +14,12 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="text-mauve-200 transition duration-700 size-full bg-black">
+  <body class="text-mauve-200 transition duration-700 size-full min-h-dvh bg-black">
     <main class="size-full p-2 relative z-10">
       <slot />
     </main>
     <SphereBg />
-    <footer class="h-[5vh] flex items-center justify-center border-t-2">
+    <footer class="p-2 flex items-center justify-center border-t-2 mt-10 md:mt-0">
       <p>@Logio - 2026</p>
     </footer>
   </body>
